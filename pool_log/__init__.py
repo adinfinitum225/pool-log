@@ -28,8 +28,9 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from . import log
+    from . import log, pool
     app.register_blueprint(log.bp)
+    app.register_blueprint(pool.bp)
     app.add_url_rule('/', endpoint='index')
 
     return app
