@@ -1,0 +1,4 @@
+include pool_log/schema.sql
+graft pool_log/static
+graft pool_log/templates
+global-exclude *.pyc
