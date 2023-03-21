@@ -9,6 +9,6 @@
 	<label for="name">Pool Name</label>
 	<input name="name" id="name" required>
 	<label for="volume">Volume in Gallons</label>
-	<input name="volume" id="volume" required>
+	<input name="volume" id="volume" pattern="/d" required>
 	<input type="submit" value="Create">
 {% endblock %}
