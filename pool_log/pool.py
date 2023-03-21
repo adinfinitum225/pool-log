@@ -34,3 +34,31 @@ def create():
         flash(error)
 
     return render_template("pools/create.html")
+
+"""
+@bp.before_app_request
+def pool_selected():
+    pool_id = session.get('pool_id')
+
+    if pool_id is None:
+        g.pool = None
+    else:
+        g.pool = get_db().execute(
+                'SELECT * FROM pool WHERE id = ?', (pool_id)
+                ).fetchone()
+"""
+
+@bp.route('/select', methods=('GET', 'POST'))
+def select():
+    db = get_db()
+    pools = db.execute(
+            'SELECT id, name, volume FROM pool'
+            ).fetchall()
+
+    if request.method == 'POST':
+        session.clear()
+        session['pool_id'] = request.form['pool']
+        return redirect(url_for('index'))
+
+        
+    return render_template('pools/select.html', pools=pools)

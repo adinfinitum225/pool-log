@@ -11,25 +11,40 @@ bp = Blueprint('log', __name__)
 @bp.route('/', methods=('GET', 'POST'))
 def index():
     db = get_db()
-    logs = db.execute(
-            'SELECT l.id, created, temperature, ph, chlorine, cya, pressure, clarity'
-            ' FROM log l'
-            ' ORDER BY created DESC'
-            ).fetchall()
-    return render_template('log/index.html', logs=logs)
+    if session['pool_id'] is not None:
+        logs = db.execute(
+                'SELECT id, created, temperature, ph, chlorine, cya, pressure, clarity'
+                ' FROM log l WHERE pool = ?'
+                ' ORDER BY created DESC',
+                (session['pool_id'],)
+                ).fetchall()
+        pool = db.execute(
+                'SELECT name, volume FROM pool WHERE id = ?',
+                (session['pool_id'],)
+                ).fetchone()
+    return render_template('log/index.html', logs=logs, pool=pool)
 
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
     if request.method == 'POST':
         # Get info from the form
-        db = get_db()
+        temperature = request.form['temperature']
+        ph = request.form['ph']
+        chlorine = request.form['chlorine']
+        cya = request.form['cya']
+        pressure = request.form['pressure']
+        clarity = request.form['clarity']
         error = None
         # Add in errors
 
         if error is None:
             try:
-                db.execute(""
+                db = get_db()
+                db.execute(
                         # Insert log values into db
+                        'INSERT INTO log (temperature, ph, chlorine, cya, pressure, clarity, pool)'
+                        ' VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        (temperature, ph, chlorine, cya, pressure, clarity, session['pool_id'])
                         )
                 db.commit()
             except db.IntegrityError:
@@ -40,5 +55,15 @@ def create():
 
             flash(error)
 
-            return render_template('log/create.html')
+        return redirect(url_for('index'))
+
+    db = get_db()
+    last_log = db.execute(
+                'SELECT id, created, temperature, ph, chlorine, cya, pressure, clarity'
+                ' FROM log l WHERE pool = ?'
+                ' ORDER BY created DESC',
+                (session['pool_id'],)
+                ).fetchone()
+
+    return render_template('log/create.html', last_log=last_log)
 
