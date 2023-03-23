@@ -23,7 +23,7 @@ def index():
                 (session['pool_id'],)
                 ).fetchone()
     else:
-        return render_template('log/index.html')
+        return redirect(url_for('pool.select'))
 
     return render_template('log/index.html', logs=logs, pool=pool)
 
