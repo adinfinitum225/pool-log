@@ -11,7 +11,7 @@ bp = Blueprint('log', __name__)
 @bp.route('/', methods=('GET', 'POST'))
 def index():
     db = get_db()
-    if session.get('pool_id') == True:
+    if "pool_id" in session:
         logs = db.execute(
                 'SELECT id, created, temperature, ph, chlorine, cya, pressure, clarity'
                 ' FROM log l WHERE pool = ?'
