@@ -11,7 +11,7 @@ bp = Blueprint('log', __name__)
 @bp.route('/', methods=('GET', 'POST'))
 def index():
     db = get_db()
-    if session['pool_id'] is not None:
+    if session.get('pool_id') == True:
         logs = db.execute(
                 'SELECT id, created, temperature, ph, chlorine, cya, pressure, clarity'
                 ' FROM log l WHERE pool = ?'
@@ -22,6 +22,9 @@ def index():
                 'SELECT name, volume FROM pool WHERE id = ?',
                 (session['pool_id'],)
                 ).fetchone()
+    else:
+        return render_template('log/index.html')
+
     return render_template('log/index.html', logs=logs, pool=pool)
 
 @bp.route('/create', methods=('GET', 'POST'))
