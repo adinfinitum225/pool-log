@@ -1,6 +1,6 @@
 [project]
-name = "pool_log_zach.13.wells"
-version = "0.1.1"
+name = "pool_log_zach_13_wells"
+version = "0.1.2"
 authors = [
 	{ name="Zachary Wells", email="zach.13.wells@gmail.com" },
 	]
@@ -24,6 +24,7 @@ include = [
 	"pool_log/schema.sql",
 	"pool_log/static",
 	"pool_log/templates",
+	"pool_log/*.py",
 	]
 exclude = [
 	"*.pyc",
