@@ -1,7 +1,7 @@
 import sqlite3
 
 import click
-from flask import current_app, g 
+from flask import current_app, g, session
 
 def get_db():
     if 'db' not in g:
