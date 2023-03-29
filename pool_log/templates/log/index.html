@@ -6,7 +6,7 @@
 
 {% block content %}
 {% if pool %}
-<a href="{{ url_for('log.create') }}">New Log</a>
+<a class="button" href="{{ url_for('log.create') }}">New Log</a>
 {% endif %}
 {% for log in logs %}
 <article class="log">
