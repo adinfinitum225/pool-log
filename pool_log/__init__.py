@@ -1,6 +1,6 @@
 import os
-from flask import Flask
-import click
+from datetime import timedelta
+from flask import Flask, session
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -25,6 +25,22 @@ def create_app(test_config=None):
     @app.route('/hello')
     def hello():
         return 'Hello World!!!'
+
+    # Jinja filter that takes in a python datetime and uses the javascript UTC offset stored in the session to display the local time
+    @app.template_filter('localtime')
+    def local_time(time):
+        if 'offset' in session:
+            minutes = -float(session['offset'])
+            tz_offset = timedelta(minutes=minutes)
+            local_time = time + tz_offset
+            return local_time
+        else:
+            return time
+    
+    # Jinja filter that takes in a python datetime and outputs a prettier string
+    @app.template_filter('prettytime')
+    def format_time(time):
+        return time.strftime('%a %b %d, %I:%M %p') 
 
     from . import db
     db.init_app(app)

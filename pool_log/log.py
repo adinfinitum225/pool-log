@@ -1,5 +1,6 @@
+from datetime import timezone, timedelta
 from flask import(
-        Blueprint, flash, g, redirect, render_template, request, session, url_for
+        Blueprint, flash, Response, redirect, render_template, request, session, url_for
         )
 
 from pool_log.db import get_db
@@ -26,6 +27,12 @@ def index():
         return redirect(url_for('pool.select'))
 
     return render_template('log/index.html', logs=logs, pool=pool)
+
+@bp.route('/tz', methods=('POST',))
+def set_timezone():
+    tz_offset = request.form['offset']
+    session['offset'] = tz_offset
+    return Response(status=204)
 
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
@@ -69,4 +76,5 @@ def create():
                 ).fetchone()
 
     return render_template('log/create.html', last_log=last_log)
+
 
