@@ -20,7 +20,7 @@ def index():
                 (session['pool_id'],)
                 ).fetchall()
         pool = db.execute(
-                'SELECT name, volume FROM pool WHERE id = ?',
+                'SELECT id, name, volume FROM pool WHERE id = ?',
                 (session['pool_id'],)
                 ).fetchone()
     else:
@@ -77,4 +77,9 @@ def create():
 
     return render_template('log/create.html', last_log=last_log)
 
-
+@bp.route('/<int:id>/delete', methods=('POST',))
+def delete_log(id):
+    db = get_db()
+    db.execute('DELETE FROM log WHERE id = ?', (id,))
+    db.commit()
+    return redirect(url_for('index'))

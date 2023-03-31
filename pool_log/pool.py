@@ -43,7 +43,7 @@ def select():
             ).fetchall()
 
     if request.method == 'POST':
-        session.clear()
+        #session.clear()
         session['pool_id'] = request.form['pool']
         return redirect(url_for('index'))
 
